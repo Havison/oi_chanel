@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import requests
+import json
 
 from pybit.unified_trading import HTTP
 from config import Config, load_config
@@ -14,7 +15,23 @@ logger = logging.getLogger(__name__)
 symbol_price = {}
 binance_symbol = []
 bybit_symbol = []
-quantity = {}
+oi_file = 'oi.json'
+
+
+def read_file(file_name):
+    try:
+        with open(file_name, 'r') as f:
+            data = json.load(f)
+            data_format = {key: [datetime.strptime(i, '%Y-%m-%d %H:%M:%S') for i in value] for key, value in data.items()}
+            return data_format
+    except FileNotFoundError:
+        return {}
+
+
+def write_file(file_name, data):
+    with open(file_name, 'w') as f:
+        data_format = {key: [i.strftime('%Y-%m-%d %H:%M:%S') for i in value] for key, value in data.items()}
+        json.dump(data_format, f, indent=4)
 
 
 async def main():
@@ -48,6 +65,7 @@ async def main():
             for symbol, price in symbol_price.items():
                 dt = datetime.now() - timedelta(minutes=21)
                 for i in price:
+                    quantity = read_file(oi_file)
                     if i[2] < dt:
                         symbol_price[symbol].remove(i)
                     a = eval(f'({symbol_price[symbol][-1][0]} - {i[0]}) / {symbol_price[symbol][-1][0]} * 100')
@@ -60,12 +78,14 @@ async def main():
                         if symbol not in quantity:
                             quantity.setdefault(symbol, []).append(datetime.now())
                             q = 1
+                            write_file(oi_file, quantity)
                         else:
                             dt_old = datetime.now() - timedelta(days=1)
                             if quantity[symbol][0] < dt_old:
                                 quantity[symbol].remove(quantity[symbol][0])
                             quantity.setdefault(symbol, []).append(datetime.now())
                             q = len(quantity[symbol])
+                            write_file(oi_file, quantity)
                         if symbol in bybit_symbol and symbol in binance_symbol:
                             await message_bybit_binance(symbol, a, oi, q)
                             await asyncio.sleep(1)

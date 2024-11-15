@@ -5,7 +5,7 @@ import json
 
 from pybit.unified_trading import HTTP
 from config import Config, load_config
-from message import message_bybit_binance, message_bybit, message_binance
+from message import message_bybit_binance, message_bybit, message_binance, message_my
 from datetime import datetime, timedelta
 
 config: Config = load_config('.env')
@@ -66,6 +66,9 @@ async def main():
                 dt = datetime.now() - timedelta(minutes=21)
                 for i in price:
                     quantity = read_file(oi_file)
+                    dt_old = datetime.now() - timedelta(days=1)
+                    if quantity[symbol][0] < dt_old:
+                        quantity[symbol].remove(quantity[symbol][0])
                     if i[2] < dt:
                         symbol_price[symbol].remove(i)
                     a = eval(f'({symbol_price[symbol][-1][0]} - {i[0]}) / {symbol_price[symbol][-1][0]} * 100')
@@ -79,10 +82,8 @@ async def main():
                             quantity.setdefault(symbol, []).append(datetime.now())
                             q = 1
                             write_file(oi_file, quantity)
+                            await message_my(symbol, a, oi, q)
                         else:
-                            dt_old = datetime.now() - timedelta(days=1)
-                            if quantity[symbol][0] < dt_old:
-                                quantity[symbol].remove(quantity[symbol][0])
                             quantity.setdefault(symbol, []).append(datetime.now())
                             q = len(quantity[symbol])
                             write_file(oi_file, quantity)

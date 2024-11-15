@@ -67,8 +67,9 @@ async def main():
                 for i in price:
                     quantity = read_file(oi_file)
                     dt_old = datetime.now() - timedelta(days=1)
-                    if quantity[symbol][0] < dt_old:
-                        quantity[symbol].remove(quantity[symbol][0])
+                    if symbol in quantity:
+                        if quantity[symbol][0] < dt_old:
+                            quantity[symbol].remove(quantity[symbol][0])
                     if i[2] < dt:
                         symbol_price[symbol].remove(i)
                     a = eval(f'({symbol_price[symbol][-1][0]} - {i[0]}) / {symbol_price[symbol][-1][0]} * 100')

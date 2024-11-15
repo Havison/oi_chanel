@@ -70,6 +70,8 @@ async def main():
                     if symbol in quantity:
                         if quantity[symbol][0] < dt_old:
                             quantity[symbol].remove(quantity[symbol][0])
+                        if quantity[symbol]:
+                            del quantity[symbol]
                     if i[2] < dt:
                         symbol_price[symbol].remove(i)
                     a = eval(f'({symbol_price[symbol][-1][0]} - {i[0]}) / {symbol_price[symbol][-1][0]} * 100')

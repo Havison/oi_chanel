@@ -76,8 +76,11 @@ async def main():
                             write_file(oi_file, quantity)
                     if i[2] < dt:
                         symbol_price[symbol].remove(i)
-                    a = eval(f'({symbol_price[symbol][-1][0]} - {i[0]}) / {symbol_price[symbol][-1][0]} * 100')
-                    oi = eval(f'({symbol_price[symbol][-1][1]} - {i[1]}) / {symbol_price[symbol][-1][1]} * 100')
+                    try:
+                        a = eval(f'({symbol_price[symbol][-1][0]} - {i[0]}) / {symbol_price[symbol][-1][0]} * 100')
+                        oi = eval(f'({symbol_price[symbol][-1][1]} - {i[1]}) / {symbol_price[symbol][-1][1]} * 100')
+                    except ZeroDivisionError:
+                        continue
                     if symbol in quantity:
                         q_oi = quantity[symbol][-1] < dt
                     else:

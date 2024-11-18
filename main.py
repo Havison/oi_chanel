@@ -80,6 +80,7 @@ async def main():
                         a = eval(f'({symbol_price[symbol][-1][0]} - {i[0]}) / {symbol_price[symbol][-1][0]} * 100')
                         oi = eval(f'({symbol_price[symbol][-1][1]} - {i[1]}) / {symbol_price[symbol][-1][1]} * 100')
                     except ZeroDivisionError:
+                        logger.error(f'Zero division error for {symbol}')
                         continue
                     if symbol in quantity:
                         q_oi = quantity[symbol][-1] < dt

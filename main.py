@@ -106,8 +106,6 @@ async def main():
                                 quantity.setdefault(symbol, []).append(datetime.now())
                                 q = len(quantity[symbol])
                                 write_file(oi_file, quantity)
-                                if q < 4:
-                                    await message_my(symbol, a, oi, q)
                             if symbol in bybit_symbol and symbol in binance_symbol:
                                 await message_bybit_binance(symbol, a, oi, q)
                                 await asyncio.sleep(1)

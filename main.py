@@ -102,6 +102,7 @@ async def main():
                                 quantity.setdefault(symbol, []).append(datetime.now())
                                 q = 1
                                 write_file(oi_file, quantity)
+                                await message_my(symbol, a, oi, q)
                             else:
                                 quantity.setdefault(symbol, []).append(datetime.now())
                                 q = len(quantity[symbol])

@@ -29,6 +29,7 @@ async def message_bybit(symbol, a, oi, q, volume, volume24):
 
 
 async def message_binance(symbol, a, oi, q, volume, volume24):
+    volume = f'{volume:,}'.replace(',', '.')
     coinglass = f'https://www.coinglass.com/tv/ru/Binance_{symbol}'
     bybit = f'https://www.bybit.com/trade/usdt/{symbol}'
     binance = f'https://www.binance.com/ru/futures/{symbol}'
@@ -44,6 +45,7 @@ async def message_binance(symbol, a, oi, q, volume, volume24):
 
 
 async def message_bybit_binance(symbol, a, oi, q, volume, volume24):
+    volume = f'{volume:,}'.replace(',', '.')
     coinglass = f'https://www.coinglass.com/tv/ru/Bybit_{symbol}'
     bybit = f'https://www.bybit.com/trade/usdt/{symbol}'
     binance = f'https://www.binance.com/ru/futures/{symbol}'

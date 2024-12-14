@@ -91,8 +91,7 @@ async def main():
                             a = eval(f'({symbol_price[symbol][-1][0]} - {i[0]}) / {symbol_price[symbol][-1][0]} * 100')
                             oi = eval(f'({symbol_price[symbol][-1][1]} - {i[1]}) / {symbol_price[symbol][-1][1]} * 100')
                             volume24 = eval(f'({symbol_price[symbol][-1][3]} * {symbol_price[symbol][-1][0]} - {i[3]} * {i[0]}) / {symbol_price[symbol][-1][3]} * 100')
-                            volume = int(float(symbol_price[symbol][-1][3]) * float(symbol_price[symbol][-1][3]) - float(i[3]) * float(i[3]))
-
+                            volume = eval(f'({symbol_price[symbol][-1][3]} * {symbol_price[symbol][-1][0]} - {i[3]} * {i[0]})')
 
                         except ZeroDivisionError:
                             logger.error(f'Zero division error for {symbol}')

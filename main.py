@@ -66,7 +66,7 @@ async def main():
                 data_binance = await fetch_binance_prices(session)
                 for dicts in data_bybit['result']['list']:
                     if 'USDT' in dicts['symbol']:
-                        symbol_price.setdefault(dicts['symbol'], []).append((dicts['lastPrice'], dicts['openInterest'], datetime.now()))
+                        symbol_price.setdefault(dicts['symbol'], []).append((dicts['lastPrice'], dicts['openInterest'], datetime.now(), dicts['volume24h']))
                         if dicts['symbol'] not in bybit_symbol:
                             bybit_symbol.append(dicts['symbol'])
                 for data in data_binance:
@@ -90,6 +90,9 @@ async def main():
                         try:
                             a = eval(f'({symbol_price[symbol][-1][0]} - {i[0]}) / {symbol_price[symbol][-1][0]} * 100')
                             oi = eval(f'({symbol_price[symbol][-1][1]} - {i[1]}) / {symbol_price[symbol][-1][1]} * 100')
+                            volume24 = eval(f'({symbol_price[symbol][-1][3]} - {i[3]}) / {symbol_price[symbol][-1][3]} * 100')
+                            volume = int(float(symbol_price[symbol][-1][3]) - float(i[3]))
+
                         except ZeroDivisionError:
                             logger.error(f'Zero division error for {symbol}')
                             continue
@@ -102,19 +105,19 @@ async def main():
                                 quantity.setdefault(symbol, []).append(datetime.now())
                                 q = 1
                                 write_file(oi_file, quantity)
-                                await message_my(symbol, a, oi, q)
+                                await message_my(symbol, a, oi, q, volume, volume24)
                             else:
                                 quantity.setdefault(symbol, []).append(datetime.now())
                                 q = len(quantity[symbol])
                                 write_file(oi_file, quantity)
                             if symbol in bybit_symbol and symbol in binance_symbol:
-                                await message_bybit_binance(symbol, a, oi, q)
+                                await message_bybit_binance(symbol, a, oi, q, volume, volume24)
                                 await asyncio.sleep(1)
                             elif symbol in binance_symbol:
-                                await message_binance(symbol, a, oi, q)
+                                await message_binance(symbol, a, oi, q, volume, volume24)
                                 await asyncio.sleep(1)
                             else:
-                                await message_bybit(symbol, a, oi, q)
+                                await message_bybit(symbol, a, oi, q, volume, volume24)
                                 await asyncio.sleep(1)
             except Exception as e:
                 logger.exception(e)

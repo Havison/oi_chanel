@@ -92,8 +92,9 @@ async def main():
                             volume_min = min(symbol_price[symbol], key=lambda x: x[3])
                             a = eval(f'({symbol_price[symbol][-1][0]} - {i[0]}) / {symbol_price[symbol][-1][0]} * 100')
                             oi = eval(f'({symbol_price[symbol][-1][1]} - {i[1]}) / {symbol_price[symbol][-1][1]} * 100')
-                            volume24 = eval(f'({volume_max[3]} * {symbol_price[symbol][-1][0]} - {volume_min[3]} * {symbol_price[symbol][-1][0]}) / {volume_max[3]} * 100')
-                            volume = int(eval(f'{volume_max[3]} * {symbol_price[symbol][-1][0]} - {volume_min[3]} * {symbol_price[symbol][-1][0]}'))
+                            volume24 = abs(eval(f'({volume_max[3]} * {symbol_price[symbol][-1][0]} - {volume_min[3]} * {symbol_price[symbol][-1][0]}) / {volume_max[3]} * 100'))
+                            volume = abs(int(eval(f'{volume_max[3]} * {symbol_price[symbol][-1][0]} - {volume_min[3]} * {symbol_price[symbol][-1][0]}')))
+                            print(round(volume24, 2), volume)
                         except ZeroDivisionError:
                             continue
                         if symbol in quantity:

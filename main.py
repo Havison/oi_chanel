@@ -106,11 +106,10 @@ async def main():
                                 quantity.setdefault(symbol, []).append(datetime.now())
                                 q = 1
                                 write_file(oi_file, quantity)
+                                await message_my(symbol, a, oi, q, volume, volume24)
                             else:
                                 quantity.setdefault(symbol, []).append(datetime.now())
                                 q = len(quantity[symbol])
-                                if q <= 3:
-                                    await message_my(symbol, a, oi, q, volume, volume24)
                                 write_file(oi_file, quantity)
                             if symbol in bybit_symbol and symbol in binance_symbol:
                                 await message_bybit_binance(symbol, a, oi, q, volume, volume24)
